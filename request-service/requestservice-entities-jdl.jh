@@ -11,6 +11,10 @@ entity Request {
     status RequestStatus
 }
 
+enum RequestType {
+    RIDE, PRODUCT
+}
+
 enum RequestStatus {
     ACCEPTED, REJECTED
 }
