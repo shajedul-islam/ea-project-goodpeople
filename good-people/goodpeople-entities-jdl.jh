@@ -33,6 +33,7 @@ enum RequestStatus {
 
 relationship OneToOne {
 	Trip{owner} to User
+	Request{requester} to User
 }
 
 relationship OneToMany {
@@ -44,7 +45,7 @@ relationship ManyToOne {
 	Request{trip} to Trip
 }
 
-paginate Trip, Request, Product with pagination
-service Trip, Request, Product with serviceImpl
-dto Trip, Request, Product with mapstruct
-filter Trip, Request, Product
+paginate all with pagination
+service all with serviceImpl
+dto all with mapstruct
+filter all
