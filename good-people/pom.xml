@@ -847,7 +847,7 @@
                                         <include>package.json</include>
                                         <include>webpack/*.*</include>
                                         <include>tsconfig.json</include>
-                                        <include>tsconfig.app.json</include>
+                                        <include>.postcss.config.js</include>
                                     </includes>
                                     <excludes>
                                         <exclude>**/app/**/service-worker.js</exclude>

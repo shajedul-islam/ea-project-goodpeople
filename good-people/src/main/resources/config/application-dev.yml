@@ -34,8 +34,9 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:mysql://localhost:3306/goodpeople?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
     username: root
-    password:
+    password: abc@123
     hikari:
+      enabled: false
       poolName: Hikari
       auto-commit: false
       data-source-properties:
@@ -44,6 +45,9 @@ spring:
         prepStmtCacheSqlLimit: 2048
         useServerPrepStmts: true
   jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
   liquibase:
     # Remove 'faker' if you do not want the sample data to be loaded automatically
     contexts: dev, faker
@@ -84,7 +88,7 @@ jhipster:
   # CORS is only enabled by default with the "dev" profile
   cors:
     # Allow Ionic for JHipster by default (* no longer allowed in Spring Boot 2.4+)
-    allowed-origins: 'http://localhost:8100,https://localhost:8100,http://localhost:9000,https://localhost:9000,http://localhost:4200,https://localhost:4200'
+    allowed-origins: 'http://localhost:8100,https://localhost:8100,http://localhost:9000,https://localhost:9000,http://localhost:9060,https://localhost:9060'
     # Enable CORS when running in GitHub Codespaces
     allowed-origin-patterns: 'https://*.githubpreview.dev'
     allowed-methods: '*'
@@ -96,7 +100,7 @@ jhipster:
     authentication:
       jwt:
         # This token must be encoded using Base64 and be at least 256 bits long (you can type `openssl rand -base64 64` on your command line to generate a 512 bits one)
-        base64-secret: OGUyZTNiYjQ3MDdiNzMwODkyNmEzMGYzNTRiZjJiOTNkZjY0MjAxMmFkNGJlZjBiZWEwNDJkZjQzYjY5ZGExNmQ4MzhlOGYyODcwOTc2MTk5NmVmNzIwMDkyMzVjMGRlMmQ3MjVhN2RkZDU1NzZkNzkxNDEzM2Q2MzU0NDAxMGE=
+        base64-secret: OTExMTczM2E2NGMzZDdjODM3NzJhYWJkMDMwNzBhYjcwOTZmYTc0YzUzNDkzYzQ2MjU1YjM2OTk5ZDIxYjc5OGFkNTQ4ZGE0NDFiZTlkMWY5YjRkMWE4YTBmNjk4MjdmN2JjZTQ1ZDU4ZGRlMzgzMmY3NDVhN2ExMTk5ZDVkOTE=
         # Token is valid 24 hours
         token-validity-in-seconds: 86400
         token-validity-in-seconds-for-remember-me: 2592000
