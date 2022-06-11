@@ -41,10 +41,6 @@ relationship OneToMany {
 	Request to Product{request}
 }
 
-relationship ManyToOne {
-	Request{trip} to Trip
-}
-
 paginate all with pagination
 service all with serviceImpl
 dto all with mapstruct
