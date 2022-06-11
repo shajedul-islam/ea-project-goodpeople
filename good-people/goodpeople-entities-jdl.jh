@@ -1,10 +1,10 @@
 entity Trip {
-    startLocation String required
-    destination String required
+    startLocation String required minlength(2)
+    destination String required minlength(2)
     startTime ZonedDateTime required
     canOfferRide Boolean
     canBringProduct Boolean
-    numberOfSeatsOffered Integer required
+    numberOfSeatsOffered Integer required min(1)
     numberOfSeatsRemaining Integer
 }
 
@@ -13,14 +13,9 @@ entity Request {
     startLocation String required
     destination String required
     numberOfSeatsRequested Integer
+    product String
     deliveryLocation String
     status RequestStatus
-}
-
-entity Product {
-	name String required minlength(2)
-    description String
-    quantity Integer required min(1)
 }
 
 enum RequestType {
@@ -38,10 +33,8 @@ relationship OneToOne {
 
 relationship OneToMany {
 	Trip to Request{trip}
-	Request to Product{request}
 }
 
 paginate all with pagination
 service all with serviceImpl
-dto all with mapstruct
 filter all
