@@ -1,0 +1,45 @@
+entity Trip {
+    startLocation String required
+    destination String required
+    startTime ZonedDateTime required
+    canOfferRide Boolean
+    canBringProduct Boolean
+    numberOfSeatsOffered Integer required
+    numberOfSeatsRemaining Integer
+}
+
+entity Request {
+	requestType RequestType required
+    startLocation String required
+    destination String required
+    numberOfSeatsRequested Integer
+    deliveryLocation String
+    status RequestStatus
+}
+
+entity Product {
+	name String required minlength(2)
+    description String
+    quantity Integer required min(1)
+}
+
+enum RequestType {
+    RIDE, PRODUCT
+}
+
+enum RequestStatus {
+    ACCEPTED, REJECTED
+}
+
+relationship OneToOne {
+	Trip{owner} to User
+}
+
+relationship OneToMany {
+	Trip to Request{trip}
+	Request to Product{request}
+}
+
+relationship ManyToOne {
+	Request{trip} to Trip
+}

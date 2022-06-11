@@ -1,0 +1,12 @@
+entity Trip {
+	ownerId Long required
+    startLocation String required
+    destination String required
+    startTime ZonedDateTime required
+    canOfferRide Boolean
+    canBringProduct Boolean
+    numberOfOfferedSeats Integer required
+}
+
+service Trip with serviceImpl
+dto Trip with mapstruct
