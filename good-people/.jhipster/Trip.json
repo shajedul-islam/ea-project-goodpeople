@@ -1,0 +1,65 @@
+{
+  "applications": "*",
+  "changelogDate": "20220611205350",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "trip",
+  "fields": [
+    {
+      "fieldName": "startLocation",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "minlength"],
+      "fieldValidateRulesMinlength": "2"
+    },
+    {
+      "fieldName": "destination",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "minlength"],
+      "fieldValidateRulesMinlength": "2"
+    },
+    {
+      "fieldName": "startTime",
+      "fieldType": "ZonedDateTime",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "canOfferRide",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "canBringProduct",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "numberOfSeatsOffered",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "1"
+    },
+    {
+      "fieldName": "numberOfSeatsRemaining",
+      "fieldType": "Integer"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": true,
+  "name": "Trip",
+  "pagination": "pagination",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "user",
+      "otherEntityRelationshipName": "trip",
+      "ownerSide": true,
+      "relationshipName": "owner",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityName": "request",
+      "otherEntityRelationshipName": "trip",
+      "relationshipName": "request",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "service": "serviceImpl"
+}

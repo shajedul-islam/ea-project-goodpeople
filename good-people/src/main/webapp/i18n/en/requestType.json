@@ -1,0 +1,9 @@
+{
+  "goodpeopleApp": {
+    "RequestType": {
+      "null": "",
+      "RIDE": "RIDE",
+      "PRODUCT": "PRODUCT"
+    }
+  }
+}
