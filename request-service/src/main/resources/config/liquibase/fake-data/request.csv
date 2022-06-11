@@ -1,0 +1,11 @@
+id;request_id;trip_id;requester_id;request_type;start_location;destination;number_of_seats_requested;product;delivery_location;status
+1;19336;6935;15450;PRODUCT;SDD Horizontal;Soap invoice Concrete;18483;Account;Lakes supply-chains system;REJECTED
+2;22694;15118;36932;RIDE;Garden Tasty Specialist;withdrawal bus Steel;6722;schemas Agent Internal;Table;ACCEPTED
+3;36599;56497;31179;RIDE;copying;SDD Keyboard;5687;Generic Shirt Sweden;Senior;REJECTED
+4;47996;82206;546;PRODUCT;deploy Ohio Assurance;cross-platform Fish compress;73722;online Marks;Plastic Outdoors invoice;REJECTED
+5;217;94462;81095;RIDE;virtual;Frozen connect;99723;Jewelery;Computer;REJECTED
+6;1601;55099;207;PRODUCT;blue architect Belize;experiences utilisation deposit;62956;Generic;experiences;REJECTED
+7;53208;39129;32222;RIDE;invoice Consultant Unbranded;system;3478;Soap;Passage gold;ACCEPTED
+8;67687;41315;46468;PRODUCT;Steel invoice;Customer-focused Guinea;20514;parsing SSL;Implementation Personal;ACCEPTED
+9;39572;44315;52265;RIDE;Djibouti;Vista;65610;redundant Frozen PCI;withdrawal Concrete Dollar;ACCEPTED
+10;9488;25554;21114;RIDE;Investor;Concrete;88094;plum Account Virginia;invoice;REJECTED
