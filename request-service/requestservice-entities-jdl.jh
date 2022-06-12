@@ -1,0 +1,20 @@
+entity Request {
+    requestId Long required
+    tripId Long required
+    requesterId Long required
+	requestType RequestType required
+    startLocation String required
+    destination String required
+    numberOfSeatsRequested Integer
+    product String
+    deliveryLocation String
+    status RequestStatus
+}
+
+enum RequestType {
+    RIDE, PRODUCT
+}
+
+enum RequestStatus {
+    ACCEPTED, REJECTED
+}

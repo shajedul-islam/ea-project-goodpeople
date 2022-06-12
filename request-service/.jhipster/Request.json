@@ -1,0 +1,64 @@
+{
+  "applications": "*",
+  "changelogDate": "20220612200613",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "request",
+  "fields": [
+    {
+      "fieldName": "requestId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "tripId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "requesterId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "requestType",
+      "fieldType": "RequestType",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "RIDE,PRODUCT"
+    },
+    {
+      "fieldName": "startLocation",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "destination",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "numberOfSeatsRequested",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "product",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "deliveryLocation",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "RequestStatus",
+      "fieldValues": "ACCEPTED,REJECTED"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Request",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [],
+  "service": "no"
+}
