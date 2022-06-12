@@ -148,7 +148,7 @@ export const Trip = (props: RouteComponentProps<{ url: string }>) => {
                   <td>{trip.canBringProduct ? 'true' : 'false'}</td>
                   <td>{trip.numberOfSeatsOffered}</td>
                   <td>{trip.numberOfSeatsRemaining}</td>
-                  <td>{trip.owner ? trip.owner.id : ''}</td>
+                  <td>{trip.owner ? trip.owner.firstName : ''}</td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/trip/${trip.id}`} color="info" size="sm" data-cy="entityDetailsButton">

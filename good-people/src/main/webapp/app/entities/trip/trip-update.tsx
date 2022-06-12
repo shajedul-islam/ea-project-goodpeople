@@ -49,7 +49,7 @@ export const TripUpdate = (props: RouteComponentProps<{ id: string }>) => {
     const entity = {
       ...tripEntity,
       ...values,
-      owner: users.find(it => it.id.toString() === values.owner.toString()),
+      /* owner: users.find(it => it.id.toString() === values.owner.toString()), */
     };
 
     if (isNew) {
@@ -151,7 +151,7 @@ export const TripUpdate = (props: RouteComponentProps<{ id: string }>) => {
                 data-cy="numberOfSeatsOffered"
                 type="text"
               />
-              <ValidatedField
+              {/* <ValidatedField
                 label={translate('goodpeopleApp.trip.numberOfSeatsRemaining')}
                 id="trip-numberOfSeatsRemaining"
                 name="numberOfSeatsRemaining"
@@ -167,7 +167,7 @@ export const TripUpdate = (props: RouteComponentProps<{ id: string }>) => {
                       </option>
                     ))
                   : null}
-              </ValidatedField>
+              </ValidatedField> */}
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/trip" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

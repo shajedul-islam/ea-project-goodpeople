@@ -1,8 +1,10 @@
 package com.miu.ea.goodpeople.web.rest;
 
 import com.miu.ea.goodpeople.domain.Trip;
+import com.miu.ea.goodpeople.domain.User;
 import com.miu.ea.goodpeople.repository.TripRepository;
 import com.miu.ea.goodpeople.service.TripService;
+import com.miu.ea.goodpeople.service.UserService;
 import com.miu.ea.goodpeople.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -42,10 +44,13 @@ public class TripResource {
     private final TripService tripService;
 
     private final TripRepository tripRepository;
+    
+    private final UserService userService;
 
-    public TripResource(TripService tripService, TripRepository tripRepository) {
+    public TripResource(TripService tripService, TripRepository tripRepository, UserService userService) {
         this.tripService = tripService;
         this.tripRepository = tripRepository;
+        this.userService = userService;
     }
 
     /**
@@ -61,6 +66,9 @@ public class TripResource {
         if (trip.getId() != null) {
             throw new BadRequestAlertException("A new trip cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        final User owner = userService.getUserWithAuthorities().get();
+        trip.setOwner(owner);
+        
         Trip result = tripService.save(trip);
         return ResponseEntity
             .created(new URI("/api/trips/" + result.getId()))
