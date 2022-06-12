@@ -37,4 +37,3 @@ relationship ManyToOne {
 
 paginate all with pagination
 service all with serviceImpl
-filter all
