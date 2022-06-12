@@ -1,5 +1,6 @@
 package com.miu.ea.goodpeople.web.rest;
 
+import com.miu.ea.goodpeople.domain.Authority;
 import com.miu.ea.goodpeople.domain.Trip;
 import com.miu.ea.goodpeople.domain.User;
 import com.miu.ea.goodpeople.repository.TripRepository;
@@ -8,6 +9,7 @@ import com.miu.ea.goodpeople.service.UserService;
 import com.miu.ea.goodpeople.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -153,6 +155,17 @@ public class TripResource {
     @GetMapping("/trips")
     public ResponseEntity<List<Trip>> getAllTrips(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
         log.debug("REST request to get a page of Trips");
+		/*
+		 * final User currentUser = userService.getUserWithAuthorities().get();
+		 * List<String> authorities = new ArrayList<String>(); for (Authority authority:
+		 * currentUser.getAuthorities()) { authorities.add(authority.getName()); } if
+		 * (authorities.contains("ROLE_ADMIN")) {
+		 * 
+		 * } else {
+		 * 
+		 * }
+		 */
+        
         Page<Trip> page = tripService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
