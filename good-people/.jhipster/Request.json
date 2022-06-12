@@ -1,0 +1,60 @@
+{
+  "applications": "*",
+  "changelogDate": "20220612090544",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "request",
+  "fields": [
+    {
+      "fieldName": "requestType",
+      "fieldType": "RequestType",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "RIDE,PRODUCT"
+    },
+    {
+      "fieldName": "startLocation",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "destination",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "numberOfSeatsRequested",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "product",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "deliveryLocation",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "RequestStatus",
+      "fieldValues": "ACCEPTED,REJECTED"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Request",
+  "pagination": "pagination",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "user",
+      "otherEntityRelationshipName": "request",
+      "relationshipName": "requester",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "trip",
+      "otherEntityRelationshipName": "request",
+      "relationshipName": "trip",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "serviceImpl"
+}

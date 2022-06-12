@@ -1,0 +1,9 @@
+{
+  "goodpeopleApp": {
+    "RequestStatus": {
+      "null": "",
+      "ACCEPTED": "ACCEPTED",
+      "REJECTED": "REJECTED"
+    }
+  }
+}
