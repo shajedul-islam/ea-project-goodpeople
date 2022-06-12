@@ -55,7 +55,7 @@ export const RequestUpdate = (props: RouteComponentProps<{ id: string }>) => {
     const entity = {
       ...requestEntity,
       ...values,
-      requester: users.find(it => it.id.toString() === values.requester.toString()),
+      /* requester: users.find(it => it.id.toString() === values.requester.toString()), */
       trip: trips.find(it => it.id.toString() === values.trip.toString()),
     };
 
@@ -115,6 +115,16 @@ export const RequestUpdate = (props: RouteComponentProps<{ id: string }>) => {
                   </option>
                 ))}
               </ValidatedField>
+              <ValidatedField id="request-trip" name="trip" data-cy="trip" label={translate('goodpeopleApp.request.trip')} type="select">
+                <option value="" key="0" />
+                {trips
+                  ? trips.map(otherEntity => (
+                    <option value={otherEntity.id} key={otherEntity.id}>
+                      {otherEntity.id}
+                    </option>
+                  ))
+                  : null}
+              </ValidatedField>
               <ValidatedField
                 label={translate('goodpeopleApp.request.startLocation')}
                 id="request-startLocation"
@@ -150,7 +160,7 @@ export const RequestUpdate = (props: RouteComponentProps<{ id: string }>) => {
                 data-cy="deliveryLocation"
                 type="text"
               />
-              <ValidatedField
+              {/* <ValidatedField
                 label={translate('goodpeopleApp.request.status')}
                 id="request-status"
                 name="status"
@@ -178,17 +188,8 @@ export const RequestUpdate = (props: RouteComponentProps<{ id: string }>) => {
                       </option>
                     ))
                   : null}
-              </ValidatedField>
-              <ValidatedField id="request-trip" name="trip" data-cy="trip" label={translate('goodpeopleApp.request.trip')} type="select">
-                <option value="" key="0" />
-                {trips
-                  ? trips.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.id}
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
+              </ValidatedField> */}
+
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/request" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

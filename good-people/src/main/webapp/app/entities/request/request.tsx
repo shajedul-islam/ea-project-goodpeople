@@ -155,7 +155,7 @@ export const Request = (props: RouteComponentProps<{ url: string }>) => {
                   <td>
                     <Translate contentKey={`goodpeopleApp.RequestStatus.${request.status}`} />
                   </td>
-                  <td>{request.requester ? request.requester.id : ''}</td>
+                  <td>{request.requester ? request.requester.firstName : ''}</td>
                   <td>{request.trip ? <Link to={`/trip/${request.trip.id}`}>{request.trip.id}</Link> : ''}</td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">

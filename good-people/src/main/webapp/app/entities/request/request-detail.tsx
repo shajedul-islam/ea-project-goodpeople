@@ -75,7 +75,7 @@ export const RequestDetail = (props: RouteComponentProps<{ id: string }>) => {
           <dt>
             <Translate contentKey="goodpeopleApp.request.requester">Requester</Translate>
           </dt>
-          <dd>{requestEntity.requester ? requestEntity.requester.id : ''}</dd>
+          <dd>{requestEntity.requester ? requestEntity.requester.firstName : ''}</dd>
           <dt>
             <Translate contentKey="goodpeopleApp.request.trip">Trip</Translate>
           </dt>

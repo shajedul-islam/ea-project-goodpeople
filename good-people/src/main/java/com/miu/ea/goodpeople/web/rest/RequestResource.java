@@ -1,8 +1,10 @@
 package com.miu.ea.goodpeople.web.rest;
 
 import com.miu.ea.goodpeople.domain.Request;
+import com.miu.ea.goodpeople.domain.User;
 import com.miu.ea.goodpeople.repository.RequestRepository;
 import com.miu.ea.goodpeople.service.RequestService;
+import com.miu.ea.goodpeople.service.UserService;
 import com.miu.ea.goodpeople.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -42,10 +44,13 @@ public class RequestResource {
     private final RequestService requestService;
 
     private final RequestRepository requestRepository;
+    
+    private final UserService userService;
 
-    public RequestResource(RequestService requestService, RequestRepository requestRepository) {
+    public RequestResource(RequestService requestService, RequestRepository requestRepository, UserService userService) {
         this.requestService = requestService;
         this.requestRepository = requestRepository;
+        this.userService = userService;
     }
 
     /**
@@ -61,6 +66,9 @@ public class RequestResource {
         if (request.getId() != null) {
             throw new BadRequestAlertException("A new request cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        final User requester = userService.getUserWithAuthorities().get();
+        request.setRequester(requester);
+        
         Request result = requestService.save(request);
         return ResponseEntity
             .created(new URI("/api/requests/" + result.getId()))
