@@ -68,9 +68,11 @@ public class TripResource {
         if (trip.getId() != null) {
             throw new BadRequestAlertException("A new trip cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        final User owner = userService.getUserWithAuthorities().get();
-        trip.setOwner(owner);
-        
+        if (trip.getOwner().getId() == null) {
+        	final User owner = userService.getUserWithAuthorities().get();
+            trip.setOwner(owner);	
+        }
+                
         Trip result = tripService.save(trip);
         return ResponseEntity
             .created(new URI("/api/trips/" + result.getId()))
