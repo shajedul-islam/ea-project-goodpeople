@@ -64,4 +64,13 @@ public interface RequestService {
      * @return the list of requests made.
      */
 	List<Request> findAllByRequesterId(Long requesterId);
+	
+	/**
+     * Get all the requests made by a trip id.
+     * @param requestId is the trip Id
+     * @return the list of requests made.
+     */
+	List<Request> findAllByTripId(Long tripId);
+	
+	
 }

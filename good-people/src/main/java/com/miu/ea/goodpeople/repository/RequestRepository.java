@@ -1,6 +1,7 @@
 package com.miu.ea.goodpeople.repository;
 
 import com.miu.ea.goodpeople.domain.Request;
+import com.miu.ea.goodpeople.domain.Trip;
 import com.miu.ea.goodpeople.domain.User;
 
 import java.util.List;
@@ -17,4 +18,5 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     List<Request> findByRequesterIsCurrentUser();
     
     List<Request> findAllByRequester(User requester);
+    List<Request> findAllByTrip(Trip trip);
 }

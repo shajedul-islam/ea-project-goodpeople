@@ -1,8 +1,10 @@
 package com.miu.ea.goodpeople.service.impl;
 
 import com.miu.ea.goodpeople.domain.Request;
+import com.miu.ea.goodpeople.domain.Trip;
 import com.miu.ea.goodpeople.domain.User;
 import com.miu.ea.goodpeople.repository.RequestRepository;
+import com.miu.ea.goodpeople.repository.TripRepository;
 import com.miu.ea.goodpeople.repository.UserRepository;
 import com.miu.ea.goodpeople.service.RequestService;
 
@@ -26,10 +28,12 @@ public class RequestServiceImpl implements RequestService {
 
     private final RequestRepository requestRepository;
     private final UserRepository userRepository;
+    private final TripRepository tripRepository;
 
-    public RequestServiceImpl(RequestRepository requestRepository, UserRepository userRepository ) {
+    public RequestServiceImpl(RequestRepository requestRepository, UserRepository userRepository, TripRepository tripRepository ) {
         this.requestRepository = requestRepository;
         this.userRepository = userRepository;
+        this.tripRepository = tripRepository;
     }
 
     @Override
@@ -88,9 +92,17 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional(readOnly = true)
     public List<Request> findAllByRequesterId(Long requesterId) {
-        log.debug("Request to get all Requests");
+        log.debug("Request to get all Requests by requester id");
         User requester = userRepository.getById(requesterId);
         return requestRepository.findAllByRequester(requester);
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public List<Request> findAllByTripId(Long tripId) {
+        log.debug("Request to get all Requests by trip id");
+        Trip trip = tripRepository.getById(tripId);
+        return requestRepository.findAllByTrip(trip);
     }
 
     @Override

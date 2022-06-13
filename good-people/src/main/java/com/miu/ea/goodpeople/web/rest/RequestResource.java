@@ -164,15 +164,28 @@ public class RequestResource {
     }
 
     /**
-     * {@code GET  /requests} : get all the requests.
+     * {@code GET  /requests/requester/:requesterId} : get all the requests by requester id
      *
      * @param pageable the pagination information.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of requests in body.
      */
     @GetMapping("/requests/requester/{requesterId}")
     public ResponseEntity<List<Request>> getAllRequestsByRequester(@PathVariable Long requesterId) {
-        log.debug("REST request to get a page of Requests");
+        log.debug("REST request to get a page of Requests by requester id ");
         List<Request> requests = requestService.findAllByRequesterId(requesterId);
+        return ResponseEntity.ok().body(requests);
+    }
+    
+    /**
+     * {@code GET  /requests/trip/:tripId} : get all the requests by trip id
+     *
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of requests in body.
+     */
+    @GetMapping("/requests/trip/{tripId}")
+    public ResponseEntity<List<Request>> getAllRequestsByTripId(@PathVariable Long tripId) {
+        log.debug("REST request to get a page of Requests by trip id");
+        List<Request> requests = requestService.findAllByTripId(tripId);
         return ResponseEntity.ok().body(requests);
     }
 
