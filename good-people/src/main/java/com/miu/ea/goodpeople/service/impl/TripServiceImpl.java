@@ -1,5 +1,6 @@
 package com.miu.ea.goodpeople.service.impl;
 
+import com.miu.ea.goodpeople.client.TripClient;
 import com.miu.ea.goodpeople.domain.Trip;
 import com.miu.ea.goodpeople.repository.TripRepository;
 import com.miu.ea.goodpeople.service.TripService;
@@ -22,8 +23,11 @@ public class TripServiceImpl implements TripService {
 
     private final TripRepository tripRepository;
 
-    public TripServiceImpl(TripRepository tripRepository) {
+    private final TripClient tripClient;
+
+    public TripServiceImpl(TripRepository tripRepository, TripClient tripClient) {
         this.tripRepository = tripRepository;
+        this.tripClient = tripClient;
     }
 
     @Override

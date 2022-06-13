@@ -2,8 +2,10 @@
 <module type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
-    <content url="file://$MODULE_DIR$/request-service" />
-    <orderEntry type="jdk" jdkName="16" jdkType="JavaSDK" />
+    <content url="file://$MODULE_DIR$/request-service">
+      <sourceFolder url="file://$MODULE_DIR$/request-service/src/main/java" isTestSource="false" />
+    </content>
+    <orderEntry type="jdk" jdkName="jbr-11" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
