@@ -1,8 +1,13 @@
 package com.miu.ea.goodpeople.service.impl;
 
 import com.miu.ea.goodpeople.domain.Trip;
+import com.miu.ea.goodpeople.domain.User;
 import com.miu.ea.goodpeople.repository.TripRepository;
+import com.miu.ea.goodpeople.repository.UserRepository;
 import com.miu.ea.goodpeople.service.TripService;
+import com.miu.ea.goodpeople.service.UserService;
+
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +26,12 @@ public class TripServiceImpl implements TripService {
     private final Logger log = LoggerFactory.getLogger(TripServiceImpl.class);
 
     private final TripRepository tripRepository;
+    
+    private final UserRepository userRepository;
 
-    public TripServiceImpl(TripRepository tripRepository) {
+    public TripServiceImpl(TripRepository tripRepository, UserRepository userRepository) {
         this.tripRepository = tripRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -78,7 +86,16 @@ public class TripServiceImpl implements TripService {
         log.debug("Request to get all Trips");
         return tripRepository.findAll(pageable);
     }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public List<Trip> findAllByOwnerId(Long ownerId) {
+        log.debug("Request to get all Trips");
+        User owner = userRepository.getById(ownerId);
+        return tripRepository.findAllByOwner(owner);
+    }
 
+    
     @Override
     @Transactional(readOnly = true)
     public Optional<Trip> findOne(Long id) {

@@ -1,6 +1,8 @@
 package com.miu.ea.goodpeople.service;
 
 import com.miu.ea.goodpeople.domain.Trip;
+
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,6 +42,14 @@ public interface TripService {
      * @return the list of entities.
      */
     Page<Trip> findAll(Pageable pageable);
+    
+
+    /**
+     * Get all the trips by owner id
+     * @param ownerId
+     * @return the list of trips by owner id
+     */
+    List<Trip> findAllByOwnerId(Long ownerId);
 
     /**
      * Get the "id" trip.

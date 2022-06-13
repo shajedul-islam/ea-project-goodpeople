@@ -172,7 +172,22 @@ public class TripResource {
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
+    
+    /**
+     * {@code GET  /trips/owner/:ownerId} : get all the trips by ownerId.
+     *
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of trips in body.
+     */
+    @GetMapping("/trips/owner/{ownerId}")
+    public ResponseEntity<List<Trip>> getAllTripsByOwnerId(@PathVariable Long ownerId) {
+        log.debug("REST request to get a page of Trips by Owner Id");
+        
+        List<Trip> trips = tripService.findAllByOwnerId(ownerId);
+        return ResponseEntity.ok().body(trips);
+    }
 
+    
     /**
      * {@code GET  /trips/:id} : get the "id" trip.
      *
@@ -185,6 +200,8 @@ public class TripResource {
         Optional<Trip> trip = tripService.findOne(id);
         return ResponseUtil.wrapOrNotFound(trip);
     }
+    
+    
 
     /**
      * {@code DELETE  /trips/:id} : delete the "id" trip.
