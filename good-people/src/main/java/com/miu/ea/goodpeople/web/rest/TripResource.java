@@ -1,13 +1,15 @@
 package com.miu.ea.goodpeople.web.rest;
 
+import com.miu.ea.goodpeople.domain.Authority;
 import com.miu.ea.goodpeople.domain.Trip;
+import com.miu.ea.goodpeople.domain.User;
 import com.miu.ea.goodpeople.repository.TripRepository;
-import com.miu.ea.goodpeople.service.TripQueryService;
 import com.miu.ea.goodpeople.service.TripService;
-import com.miu.ea.goodpeople.service.criteria.TripCriteria;
+import com.miu.ea.goodpeople.service.UserService;
 import com.miu.ea.goodpeople.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -43,13 +46,13 @@ public class TripResource {
     private final TripService tripService;
 
     private final TripRepository tripRepository;
+    
+    private final UserService userService;
 
-    private final TripQueryService tripQueryService;
-
-    public TripResource(TripService tripService, TripRepository tripRepository, TripQueryService tripQueryService) {
+    public TripResource(TripService tripService, TripRepository tripRepository, UserService userService) {
         this.tripService = tripService;
         this.tripRepository = tripRepository;
-        this.tripQueryService = tripQueryService;
+        this.userService = userService;
     }
 
     /**
@@ -65,6 +68,11 @@ public class TripResource {
         if (trip.getId() != null) {
             throw new BadRequestAlertException("A new trip cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        if (trip.getOwner().getId() == null) {
+        	final User owner = userService.getUserWithAuthorities().get();
+            trip.setOwner(owner);	
+        }
+                
         Trip result = tripService.save(trip);
         return ResponseEntity
             .created(new URI("/api/trips/" + result.getId()))
@@ -144,29 +152,41 @@ public class TripResource {
      * {@code GET  /trips} : get all the trips.
      *
      * @param pageable the pagination information.
-     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of trips in body.
      */
     @GetMapping("/trips")
-    public ResponseEntity<List<Trip>> getAllTrips(TripCriteria criteria, @org.springdoc.api.annotations.ParameterObject Pageable pageable) {
-        log.debug("REST request to get Trips by criteria: {}", criteria);
-        Page<Trip> page = tripQueryService.findByCriteria(criteria, pageable);
+    public ResponseEntity<List<Trip>> getAllTrips(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
+        log.debug("REST request to get a page of Trips");
+		/*
+		 * final User currentUser = userService.getUserWithAuthorities().get();
+		 * List<String> authorities = new ArrayList<String>(); for (Authority authority:
+		 * currentUser.getAuthorities()) { authorities.add(authority.getName()); } if
+		 * (authorities.contains("ROLE_ADMIN")) {
+		 * 
+		 * } else {
+		 * 
+		 * }
+		 */
+        
+        Page<Trip> page = tripService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
-
+    
     /**
-     * {@code GET  /trips/count} : count all the trips.
+     * {@code GET  /trips/owner/:ownerId} : get all the trips by ownerId.
      *
-     * @param criteria the criteria which the requested entities should match.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of trips in body.
      */
-    @GetMapping("/trips/count")
-    public ResponseEntity<Long> countTrips(TripCriteria criteria) {
-        log.debug("REST request to count Trips by criteria: {}", criteria);
-        return ResponseEntity.ok().body(tripQueryService.countByCriteria(criteria));
+    @GetMapping("/trips/owner/{ownerId}")
+    public ResponseEntity<List<Trip>> getAllTripsByOwnerId(@PathVariable Long ownerId) {
+        log.debug("REST request to get a page of Trips by Owner Id");
+        List<Trip> trips = tripService.findAllByOwnerId(ownerId);
+        return ResponseEntity.ok().body(trips);
     }
 
+    
     /**
      * {@code GET  /trips/:id} : get the "id" trip.
      *
@@ -179,6 +199,8 @@ public class TripResource {
         Optional<Trip> trip = tripService.findOne(id);
         return ResponseUtil.wrapOrNotFound(trip);
     }
+    
+    
 
     /**
      * {@code DELETE  /trips/:id} : delete the "id" trip.

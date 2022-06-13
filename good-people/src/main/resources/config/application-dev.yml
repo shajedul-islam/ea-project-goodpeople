@@ -54,8 +54,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: tanvir.workmail@gmail.com  #Replace this field with your Gmail username.
-    password: fjahammfafbsryjp           #Replace this field with your Gmail password/App password.
+    username: tanvir.workmail@gmail.com
+    password: fjahammfafbsryjp
     protocol: smtp
     tls: true
     properties.mail.smtp:
@@ -106,12 +106,12 @@ jhipster:
     authentication:
       jwt:
         # This token must be encoded using Base64 and be at least 256 bits long (you can type `openssl rand -base64 64` on your command line to generate a 512 bits one)
-        base64-secret: OTExMTczM2E2NGMzZDdjODM3NzJhYWJkMDMwNzBhYjcwOTZmYTc0YzUzNDkzYzQ2MjU1YjM2OTk5ZDIxYjc5OGFkNTQ4ZGE0NDFiZTlkMWY5YjRkMWE4YTBmNjk4MjdmN2JjZTQ1ZDU4ZGRlMzgzMmY3NDVhN2ExMTk5ZDVkOTE=
+        base64-secret: MzVhNDg5ZDNlYmY5NGQwMGViYjg2MmEwYTJiODU0ZDYxM2U5M2UxNWQ1MjM2YmRiMjRkOGMwOTZmNTVmOTNmN2IzYzc1ZTJiYzAzODg0ZmU3NjdjMmMzNmMzNTRjMGVhNzhiMDcyMDkwOTQ0YzZkYTJjNjUwNzY0ZWFmMWEyMTc=
         # Token is valid 24 hours
         token-validity-in-seconds: 86400
         token-validity-in-seconds-for-remember-me: 2592000
   mail: # specific JHipster mail property, for standard properties see MailProperties
-    base-url: http://127.0.0.1:8080
+    base-url: http://127.0.0.1:9000
   logging:
     use-json-format: false # By default, logs are not in Json format
     logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration

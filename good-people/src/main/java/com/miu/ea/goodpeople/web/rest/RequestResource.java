@@ -1,10 +1,10 @@
 package com.miu.ea.goodpeople.web.rest;
 
 import com.miu.ea.goodpeople.domain.Request;
+import com.miu.ea.goodpeople.domain.User;
 import com.miu.ea.goodpeople.repository.RequestRepository;
-import com.miu.ea.goodpeople.service.RequestQueryService;
 import com.miu.ea.goodpeople.service.RequestService;
-import com.miu.ea.goodpeople.service.criteria.RequestCriteria;
+import com.miu.ea.goodpeople.service.UserService;
 import com.miu.ea.goodpeople.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -43,13 +44,13 @@ public class RequestResource {
     private final RequestService requestService;
 
     private final RequestRepository requestRepository;
+    
+    private final UserService userService;
 
-    private final RequestQueryService requestQueryService;
-
-    public RequestResource(RequestService requestService, RequestRepository requestRepository, RequestQueryService requestQueryService) {
+    public RequestResource(RequestService requestService, RequestRepository requestRepository, UserService userService) {
         this.requestService = requestService;
         this.requestRepository = requestRepository;
-        this.requestQueryService = requestQueryService;
+        this.userService = userService;
     }
 
     /**
@@ -65,6 +66,12 @@ public class RequestResource {
         if (request.getId() != null) {
             throw new BadRequestAlertException("A new request cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        
+        if (request.getRequester().getId() == null) {
+        	final User requester = userService.getUserWithAuthorities().get();
+            request.setRequester(requester);
+        }
+        
         Request result = requestService.save(request);
         return ResponseEntity
             .created(new URI("/api/requests/" + result.getId()))
@@ -146,30 +153,40 @@ public class RequestResource {
      * {@code GET  /requests} : get all the requests.
      *
      * @param pageable the pagination information.
-     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of requests in body.
      */
     @GetMapping("/requests")
-    public ResponseEntity<List<Request>> getAllRequests(
-        RequestCriteria criteria,
-        @org.springdoc.api.annotations.ParameterObject Pageable pageable
-    ) {
-        log.debug("REST request to get Requests by criteria: {}", criteria);
-        Page<Request> page = requestQueryService.findByCriteria(criteria, pageable);
+    public ResponseEntity<List<Request>> getAllRequests(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
+        log.debug("REST request to get a page of Requests");
+        Page<Request> page = requestService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
-     * {@code GET  /requests/count} : count all the requests.
+     * {@code GET  /requests/requester/:requesterId} : get all the requests by requester id
      *
-     * @param criteria the criteria which the requested entities should match.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of requests in body.
      */
-    @GetMapping("/requests/count")
-    public ResponseEntity<Long> countRequests(RequestCriteria criteria) {
-        log.debug("REST request to count Requests by criteria: {}", criteria);
-        return ResponseEntity.ok().body(requestQueryService.countByCriteria(criteria));
+    @GetMapping("/requests/requester/{requesterId}")
+    public ResponseEntity<List<Request>> getAllRequestsByRequester(@PathVariable Long requesterId) {
+        log.debug("REST request to get a page of Requests by requester id ");
+        List<Request> requests = requestService.findAllByRequesterId(requesterId);
+        return ResponseEntity.ok().body(requests);
+    }
+    
+    /**
+     * {@code GET  /requests/trip/:tripId} : get all the requests by trip id
+     *
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of requests in body.
+     */
+    @GetMapping("/requests/trip/{tripId}")
+    public ResponseEntity<List<Request>> getAllRequestsByTripId(@PathVariable Long tripId) {
+        log.debug("REST request to get a page of Requests by trip id");
+        List<Request> requests = requestService.findAllByTripId(tripId);
+        return ResponseEntity.ok().body(requests);
     }
 
     /**
@@ -200,4 +217,7 @@ public class RequestResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }
+    
+    //TODO: get all requests by a trip owner
+    //TODO: get all requests by a requester
 }

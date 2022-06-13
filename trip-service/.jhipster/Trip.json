@@ -1,6 +1,6 @@
 {
   "applications": "*",
-  "changelogDate": "20220611214744",
+  "changelogDate": "20220612200309",
   "dto": "no",
   "embedded": false,
   "entityTableName": "trip",

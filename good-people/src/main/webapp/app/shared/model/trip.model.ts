@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
-import { IUser } from 'app/shared/model/user.model';
 import { IRequest } from 'app/shared/model/request.model';
+import { IUser } from 'app/shared/model/user.model';
 
 export interface ITrip {
   id?: number;
@@ -9,10 +9,10 @@ export interface ITrip {
   startTime?: string;
   canOfferRide?: boolean | null;
   canBringProduct?: boolean | null;
-  numberOfSeatsOffered?: number;
+  numberOfSeatsOffered?: number | null;
   numberOfSeatsRemaining?: number | null;
-  owner?: IUser | null;
   requests?: IRequest[] | null;
+  owner?: IUser | null;
 }
 
 export const defaultValue: Readonly<ITrip> = {

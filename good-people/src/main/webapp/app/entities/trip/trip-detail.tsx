@@ -75,7 +75,7 @@ export const TripDetail = (props: RouteComponentProps<{ id: string }>) => {
           <dt>
             <Translate contentKey="goodpeopleApp.trip.owner">Owner</Translate>
           </dt>
-          <dd>{tripEntity.owner ? tripEntity.owner.id : ''}</dd>
+          <dd>{tripEntity.owner ? tripEntity.owner.firstName : ''}</dd>
         </dl>
         <Button tag={Link} to="/trip" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

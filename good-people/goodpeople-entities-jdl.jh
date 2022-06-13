@@ -4,14 +4,14 @@ entity Trip {
     startTime ZonedDateTime required
     canOfferRide Boolean
     canBringProduct Boolean
-    numberOfSeatsOffered Integer required min(1)
+    numberOfSeatsOffered Integer
     numberOfSeatsRemaining Integer
 }
 
 entity Request {
 	requestType RequestType required
-    startLocation String required
-    destination String required
+    startLocation String
+    destination String
     numberOfSeatsRequested Integer
     product String
     deliveryLocation String
@@ -26,15 +26,14 @@ enum RequestStatus {
     ACCEPTED, REJECTED
 }
 
-relationship OneToOne {
-	Trip{owner} to User
-	Request{requester} to User
-}
-
 relationship OneToMany {
 	Trip to Request{trip}
 }
 
+relationship ManyToOne {
+	Trip{owner} to User
+	Request{requester} to User
+}
+
 paginate all with pagination
 service all with serviceImpl
-filter all

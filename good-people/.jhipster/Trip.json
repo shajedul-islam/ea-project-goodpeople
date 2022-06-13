@@ -1,6 +1,6 @@
 {
   "applications": "*",
-  "changelogDate": "20220611205350",
+  "changelogDate": "20220612090543",
   "dto": "no",
   "embedded": false,
   "entityTableName": "trip",
@@ -32,9 +32,7 @@
     },
     {
       "fieldName": "numberOfSeatsOffered",
-      "fieldType": "Integer",
-      "fieldValidateRules": ["required", "min"],
-      "fieldValidateRulesMin": "1"
+      "fieldType": "Integer"
     },
     {
       "fieldName": "numberOfSeatsRemaining",
@@ -42,23 +40,22 @@
     }
   ],
   "fluentMethods": true,
-  "jpaMetamodelFiltering": true,
+  "jpaMetamodelFiltering": false,
   "name": "Trip",
   "pagination": "pagination",
   "readOnly": false,
   "relationships": [
     {
-      "otherEntityName": "user",
-      "otherEntityRelationshipName": "trip",
-      "ownerSide": true,
-      "relationshipName": "owner",
-      "relationshipType": "one-to-one"
-    },
-    {
       "otherEntityName": "request",
       "otherEntityRelationshipName": "trip",
       "relationshipName": "request",
       "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "user",
+      "otherEntityRelationshipName": "trip",
+      "relationshipName": "owner",
+      "relationshipType": "many-to-one"
     }
   ],
   "service": "serviceImpl"

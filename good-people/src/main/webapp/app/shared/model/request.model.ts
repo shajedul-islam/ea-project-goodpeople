@@ -6,8 +6,8 @@ import { RequestStatus } from 'app/shared/model/enumerations/request-status.mode
 export interface IRequest {
   id?: number;
   requestType?: RequestType;
-  startLocation?: string;
-  destination?: string;
+  startLocation?: string | null;
+  destination?: string | null;
   numberOfSeatsRequested?: number | null;
   product?: string | null;
   deliveryLocation?: string | null;

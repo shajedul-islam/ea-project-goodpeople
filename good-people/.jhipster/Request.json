@@ -1,6 +1,6 @@
 {
   "applications": "*",
-  "changelogDate": "20220611205351",
+  "changelogDate": "20220612090544",
   "dto": "no",
   "embedded": false,
   "entityTableName": "request",
@@ -13,13 +13,11 @@
     },
     {
       "fieldName": "startLocation",
-      "fieldType": "String",
-      "fieldValidateRules": ["required"]
+      "fieldType": "String"
     },
     {
       "fieldName": "destination",
-      "fieldType": "String",
-      "fieldValidateRules": ["required"]
+      "fieldType": "String"
     },
     {
       "fieldName": "numberOfSeatsRequested",
@@ -40,7 +38,7 @@
     }
   ],
   "fluentMethods": true,
-  "jpaMetamodelFiltering": true,
+  "jpaMetamodelFiltering": false,
   "name": "Request",
   "pagination": "pagination",
   "readOnly": false,
@@ -48,9 +46,8 @@
     {
       "otherEntityName": "user",
       "otherEntityRelationshipName": "request",
-      "ownerSide": true,
       "relationshipName": "requester",
-      "relationshipType": "one-to-one"
+      "relationshipType": "many-to-one"
     },
     {
       "otherEntityName": "trip",

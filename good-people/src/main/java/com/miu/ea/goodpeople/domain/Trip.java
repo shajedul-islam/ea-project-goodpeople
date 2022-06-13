@@ -42,21 +42,18 @@ public class Trip implements Serializable {
     @Column(name = "can_bring_product")
     private Boolean canBringProduct;
 
-    @NotNull
-    @Min(value = 1)
-    @Column(name = "number_of_seats_offered", nullable = false)
+    @Column(name = "number_of_seats_offered")
     private Integer numberOfSeatsOffered;
 
     @Column(name = "number_of_seats_remaining")
     private Integer numberOfSeatsRemaining;
 
-    @OneToOne
-    @JoinColumn(unique = true)
-    private User owner;
-
     @OneToMany(mappedBy = "trip")
     @JsonIgnoreProperties(value = { "requester", "trip" }, allowSetters = true)
     private Set<Request> requests = new HashSet<>();
+
+    @ManyToOne
+    private User owner;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -164,19 +161,6 @@ public class Trip implements Serializable {
         this.numberOfSeatsRemaining = numberOfSeatsRemaining;
     }
 
-    public User getOwner() {
-        return this.owner;
-    }
-
-    public void setOwner(User user) {
-        this.owner = user;
-    }
-
-    public Trip owner(User user) {
-        this.setOwner(user);
-        return this;
-    }
-
     public Set<Request> getRequests() {
         return this.requests;
     }
@@ -205,6 +189,19 @@ public class Trip implements Serializable {
     public Trip removeRequest(Request request) {
         this.requests.remove(request);
         request.setTrip(null);
+        return this;
+    }
+
+    public User getOwner() {
+        return this.owner;
+    }
+
+    public void setOwner(User user) {
+        this.owner = user;
+    }
+
+    public Trip owner(User user) {
+        this.setOwner(user);
         return this;
     }
 

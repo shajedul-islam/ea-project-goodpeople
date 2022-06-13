@@ -26,12 +26,10 @@ public class Request implements Serializable {
     @Column(name = "request_type", nullable = false)
     private RequestType requestType;
 
-    @NotNull
-    @Column(name = "start_location", nullable = false)
+    @Column(name = "start_location")
     private String startLocation;
 
-    @NotNull
-    @Column(name = "destination", nullable = false)
+    @Column(name = "destination")
     private String destination;
 
     @Column(name = "number_of_seats_requested")
@@ -47,12 +45,11 @@ public class Request implements Serializable {
     @Column(name = "status")
     private RequestStatus status;
 
-    @OneToOne
-    @JoinColumn(unique = true)
+    @ManyToOne
     private User requester;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "owner", "requests" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "requests", "owner" }, allowSetters = true)
     private Trip trip;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
