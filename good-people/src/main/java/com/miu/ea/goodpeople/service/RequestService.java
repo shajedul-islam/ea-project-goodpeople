@@ -1,6 +1,8 @@
 package com.miu.ea.goodpeople.service;
 
 import com.miu.ea.goodpeople.domain.Request;
+
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -55,4 +57,11 @@ public interface RequestService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    /**
+     * Get all the requests made by a requester id.
+     * @param requestId is the requester Id
+     * @return the list of requests made.
+     */
+	List<Request> findAllByRequesterId(Long requesterId);
 }

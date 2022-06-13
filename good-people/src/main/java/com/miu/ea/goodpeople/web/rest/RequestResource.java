@@ -66,8 +66,11 @@ public class RequestResource {
         if (request.getId() != null) {
             throw new BadRequestAlertException("A new request cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        final User requester = userService.getUserWithAuthorities().get();
-        request.setRequester(requester);
+        
+        if (request.getRequester().getId() == null) {
+        	final User requester = userService.getUserWithAuthorities().get();
+            request.setRequester(requester);
+        }
         
         Request result = requestService.save(request);
         return ResponseEntity
@@ -161,6 +164,19 @@ public class RequestResource {
     }
 
     /**
+     * {@code GET  /requests} : get all the requests.
+     *
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of requests in body.
+     */
+    @GetMapping("/requests/requester/{requesterId}")
+    public ResponseEntity<List<Request>> getAllRequestsByRequester(@PathVariable Long requesterId) {
+        log.debug("REST request to get a page of Requests");
+        List<Request> requests = requestService.findAllByRequesterId(requesterId);
+        return ResponseEntity.ok().body(requests);
+    }
+
+    /**
      * {@code GET  /requests/:id} : get the "id" request.
      *
      * @param id the id of the request to retrieve.
@@ -188,4 +204,7 @@ public class RequestResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }
+    
+    //TODO: get all requests by a trip owner
+    //TODO: get all requests by a requester
 }

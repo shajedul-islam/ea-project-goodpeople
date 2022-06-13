@@ -182,7 +182,6 @@ public class TripResource {
     @GetMapping("/trips/owner/{ownerId}")
     public ResponseEntity<List<Trip>> getAllTripsByOwnerId(@PathVariable Long ownerId) {
         log.debug("REST request to get a page of Trips by Owner Id");
-        
         List<Trip> trips = tripService.findAllByOwnerId(ownerId);
         return ResponseEntity.ok().body(trips);
     }
