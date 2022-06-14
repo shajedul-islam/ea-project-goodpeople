@@ -9,6 +9,7 @@ import com.miu.ea.goodpeople.service.TripService;
 import com.miu.ea.goodpeople.service.UserService;
 import com.miu.ea.goodpeople.service.dto.TripDTO;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -29,9 +30,9 @@ public class TripServiceImpl implements TripService {
     private final Logger log = LoggerFactory.getLogger(TripServiceImpl.class);
 
     private final TripRepository tripRepository;
-    
+
     private final UserRepository userRepository;
-    
+
     private final TripClient tripClient;
 
     public TripServiceImpl(TripRepository tripRepository, UserRepository userRepository, TripClient tripClient) {
@@ -40,32 +41,41 @@ public class TripServiceImpl implements TripService {
 		this.tripClient = tripClient;
     }
 
+    private TripDTO tripToTripDTO(Trip trip) {
+    	return new TripDTO(trip.getId(), trip.getId(), trip.getOwner().getId(), trip.getStartLocation(),
+				trip.getDestination(), trip.getStartTime().toString(), trip.getCanOfferRide(), trip.getCanBringProduct(),
+				trip.getNumberOfSeatsOffered());
+    }
+
+    private Trip tripDTOToTrip(Trip trip, TripDTO tripDTO) {
+    	User owner = userRepository.getById(tripDTO.getOwnerId());
+    	return new Trip(tripDTO.getId(), tripDTO.getStartLocation(), tripDTO.getDestination(), tripDTO.getStartTime(),
+    			tripDTO.getCanOfferRide(), tripDTO.getCanBringProduct(), tripDTO.getNumberOfOfferedSeats(),
+    			trip.getNumberOfSeatsRemaining(), trip.getRequests(), owner);
+    }
+
     @Override
     public Trip save(Trip trip) {
         log.debug("Request to save Trip : {}", trip);
-        Trip savedTrip = tripRepository.save(trip);
-        
-		TripDTO tripDTO = new TripDTO(trip.getId(), trip.getId(), trip.getOwner().getId(), trip.getStartLocation(),
-				trip.getDestination(), trip.getStartTime().toString(), trip.getCanOfferRide(), trip.getCanBringProduct(),
-				trip.getNumberOfSeatsOffered());
-		
+        // Trip savedTrip = tripRepository.save(trip);
+
+		TripDTO tripDTO = tripToTripDTO(trip);
+
 		tripDTO = tripClient.createTrip(tripDTO);
 
-        return savedTrip;
+        return tripDTOToTrip(trip, tripDTO);
     }
 
     @Override
     public Trip update(Trip trip) {
         log.debug("Request to save Trip : {}", trip);
-        Trip updatedTrip = tripRepository.save(trip);
-        
-        TripDTO tripDTO = new TripDTO(trip.getId(), trip.getId(), trip.getOwner().getId(), trip.getStartLocation(),
-				trip.getDestination(), trip.getStartTime().toString(), trip.getCanOfferRide(), trip.getCanBringProduct(),
-				trip.getNumberOfSeatsOffered());
-		
+        //Trip updatedTrip = tripRepository.save(trip);
+
+        TripDTO tripDTO = tripToTripDTO(trip);
+
 		tripClient.updateTrip(trip.getId(), tripDTO);
-		
-		return updatedTrip;
+
+		return tripDTOToTrip(trip, tripDTO);
     }
 
     @Override
@@ -106,18 +116,17 @@ public class TripServiceImpl implements TripService {
     @Transactional(readOnly = true)
     public Page<Trip> findAll(Pageable pageable) {
         log.debug("Request to get all Trips");
-        
+
         List<Trip> trips = tripClient.getAllTrips();
-        
+
         final int start = (int)pageable.getOffset();
         final int end = Math.min((start + pageable.getPageSize()), trips.size());
         final Page<Trip> page = new PageImpl<>(trips.subList(start, end), pageable, trips.size());
-        
+
         return page;
-        
-        // return tripRepository.findAll(pageable);
+
     }
-    
+
     @Override
     @Transactional(readOnly = true)
     public List<Trip> findAllByOwnerId(Long ownerId) {
@@ -126,7 +135,7 @@ public class TripServiceImpl implements TripService {
         return tripRepository.findAllByOwner(owner);
     }
 
-    
+
     @Override
     @Transactional(readOnly = true)
     public Optional<Trip> findOne(Long id) {

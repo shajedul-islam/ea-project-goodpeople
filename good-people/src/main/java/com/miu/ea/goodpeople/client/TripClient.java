@@ -29,7 +29,7 @@ public interface TripClient {
     List<Trip> getAllTrips();
 
     @RequestLine("GET /trips/{id}")
-    List<TripDTO> getTrip(@Param("id") Long id);
+    TripDTO getTrip(@Param("id") Long id);
 
     @RequestLine("DELETE /trips/{id}")
     List<TripDTO> deleteTrip(@Param("id") Long id);
