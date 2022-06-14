@@ -9,6 +9,7 @@ import com.miu.ea.goodpeople.service.TripService;
 import com.miu.ea.goodpeople.service.UserService;
 import com.miu.ea.goodpeople.service.dto.TripDTO;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -48,7 +49,7 @@ public class TripServiceImpl implements TripService {
     }
 
     private Trip tripDTOToTrip(Trip trip, TripDTO tripDTO) {
-    	User owner = userRepository.getById(tripDTO.getOwnerId());
+    	User owner = userRepository.findById(tripDTO.getOwnerId()).get();
     	return new Trip(tripDTO.getId(), tripDTO.getStartLocation(), tripDTO.getDestination(), tripDTO.getStartTime(),
     			tripDTO.getCanOfferRide(), tripDTO.getCanBringProduct(), tripDTO.getNumberOfOfferedSeats(),
     			trip.getNumberOfSeatsRemaining(), trip.getRequests(), owner);
@@ -59,6 +60,7 @@ public class TripServiceImpl implements TripService {
         log.debug("Request to save Trip : {}", trip);
         // Trip savedTrip = tripRepository.save(trip);
 
+        trip.setId(new Double(Math.random()).longValue());
 		TripDTO tripDTO = tripToTripDTO(trip);
 
 		tripDTO = tripClient.createTrip(tripDTO);
@@ -117,7 +119,12 @@ public class TripServiceImpl implements TripService {
     public Page<Trip> findAll(Pageable pageable) {
         log.debug("Request to get all Trips");
 
-        List<Trip> trips = tripClient.getAllTrips();
+        List<TripDTO> tripDTOs = tripClient.getAllTrips();
+        
+        List<Trip> trips = new ArrayList<Trip>();
+        for (TripDTO tripDTO : tripDTOs) {
+        	trips.add(tripDTOToTrip(new Trip(), tripDTO));
+        }
 
         final int start = (int)pageable.getOffset();
         final int end = Math.min((start + pageable.getPageSize()), trips.size());
@@ -131,8 +138,15 @@ public class TripServiceImpl implements TripService {
     @Transactional(readOnly = true)
     public List<Trip> findAllByOwnerId(Long ownerId) {
         log.debug("Request to get all Trips");
-        User owner = userRepository.getById(ownerId);
-        return tripRepository.findAllByOwner(owner);
+        //User owner = userRepository.getById(ownerId);
+        //return tripRepository.findAllByOwner(owner);
+        List<TripDTO> tripDTOs = tripClient.getTripByOwnerId(ownerId);
+        
+        List<Trip> trips = new ArrayList<Trip>();
+        for (TripDTO tripDTO : tripDTOs) {
+        	trips.add(tripDTOToTrip(new Trip(), tripDTO));
+        }
+        return trips;
     }
 
 
@@ -140,12 +154,15 @@ public class TripServiceImpl implements TripService {
     @Transactional(readOnly = true)
     public Optional<Trip> findOne(Long id) {
         log.debug("Request to get Trip : {}", id);
-        return tripRepository.findById(id);
+        // return tripRepository.findById(id);
+        TripDTO tripDTO = tripClient.getTrip(id);
+        return Optional.of(tripDTOToTrip(new Trip(), tripDTO));
     }
 
     @Override
     public void delete(Long id) {
         log.debug("Request to delete Trip : {}", id);
-        tripRepository.deleteById(id);
+        // tripRepository.deleteById(id);
+        tripClient.deleteTrip(id);
     }
 }

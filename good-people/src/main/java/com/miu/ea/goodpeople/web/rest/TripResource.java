@@ -101,8 +101,14 @@ public class TripResource {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
-        if (!tripRepository.existsById(id)) {
-            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+		/*
+		 * if (!tripRepository.existsById(id)) { throw new
+		 * BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"); }
+		 */
+        
+        if (trip.getOwner() == null) {
+        	final User owner = userService.getUserWithAuthorities().get();
+            trip.setOwner(owner);	
         }
 
         Trip result = tripService.update(trip);
@@ -112,41 +118,42 @@ public class TripResource {
             .body(result);
     }
 
-    /**
-     * {@code PATCH  /trips/:id} : Partial updates given fields of an existing trip, field will ignore if it is null
-     *
-     * @param id the id of the trip to save.
-     * @param trip the trip to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated trip,
-     * or with status {@code 400 (Bad Request)} if the trip is not valid,
-     * or with status {@code 404 (Not Found)} if the trip is not found,
-     * or with status {@code 500 (Internal Server Error)} if the trip couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
-    @PatchMapping(value = "/trips/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<Trip> partialUpdateTrip(
-        @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody Trip trip
-    ) throws URISyntaxException {
-        log.debug("REST request to partial update Trip partially : {}, {}", id, trip);
-        if (trip.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
-        }
-        if (!Objects.equals(id, trip.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
-        }
-
-        if (!tripRepository.existsById(id)) {
-            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
-        }
-
-        Optional<Trip> result = tripService.partialUpdate(trip);
-
-        return ResponseUtil.wrapOrNotFound(
-            result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, trip.getId().toString())
-        );
-    }
+	/**
+	 * {@code PATCH  /trips/:id} : Partial updates given fields of an existing trip,
+	 * field will ignore if it is null
+	 *
+	 * @param id   the id of the trip to save.
+	 * @param trip the trip to update.
+	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+	 *         the updated trip, or with status {@code 400 (Bad Request)} if the
+	 *         trip is not valid, or with status {@code 404 (Not Found)} if the trip
+	 *         is not found, or with status {@code 500 (Internal Server Error)} if
+	 *         the trip couldn't be updated.
+	 * @throws URISyntaxException if the Location URI syntax is incorrect.
+	 */
+	/*
+	 * @PatchMapping(value = "/trips/{id}", consumes = { "application/json",
+	 * "application/merge-patch+json" }) public ResponseEntity<Trip>
+	 * partialUpdateTrip(
+	 * 
+	 * @PathVariable(value = "id", required = false) final Long id,
+	 * 
+	 * @NotNull @RequestBody Trip trip ) throws URISyntaxException {
+	 * log.debug("REST request to partial update Trip partially : {}, {}", id,
+	 * trip); if (trip.getId() == null) { throw new
+	 * BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"); } if
+	 * (!Objects.equals(id, trip.getId())) { throw new
+	 * BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"); }
+	 * 
+	 * if (!tripRepository.existsById(id)) { throw new
+	 * BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"); }
+	 * 
+	 * Optional<Trip> result = tripService.partialUpdate(trip);
+	 * 
+	 * return ResponseUtil.wrapOrNotFound( result,
+	 * HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME,
+	 * trip.getId().toString()) ); }
+	 */
 
     /**
      * {@code GET  /trips} : get all the trips.

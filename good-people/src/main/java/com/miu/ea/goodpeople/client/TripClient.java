@@ -26,12 +26,15 @@ public interface TripClient {
     TripDTO partialUpdateTrip(@Param("id") Long id, TripDTO trip);
 
     @RequestLine("GET /trips")
-    List<Trip> getAllTrips();
+    List<TripDTO> getAllTrips();
 
     @RequestLine("GET /trips/{id}")
     TripDTO getTrip(@Param("id") Long id);
 
     @RequestLine("DELETE /trips/{id}")
     List<TripDTO> deleteTrip(@Param("id") Long id);
+    
+    @RequestLine("GET /trips/owner/{id}")
+    List<TripDTO> getTripByOwnerId(@Param("id") Long id);
 
 }
