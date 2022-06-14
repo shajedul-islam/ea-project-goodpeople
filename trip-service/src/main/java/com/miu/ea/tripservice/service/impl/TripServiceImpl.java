@@ -93,4 +93,9 @@ public class TripServiceImpl implements TripService {
         log.debug("Request to delete Trip : {}", id);
         tripRepository.deleteById(id);
     }
+    
+    @Override
+    public List<Trip> findByOwnerId(Long id) {
+        return tripRepository.findTripByOwnerId(id);
+    }
 }

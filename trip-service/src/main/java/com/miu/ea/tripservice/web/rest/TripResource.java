@@ -200,4 +200,9 @@ public class TripResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
     }
+    
+    @GetMapping("/trips/owner/{id}")
+    public List<Trip> findAllByOwnerId(@PathVariable("id") Long id) {
+        return tripService.findByOwnerId(id);
+    }
 }

@@ -53,4 +53,8 @@ public interface TripService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+    
+    List<Trip> findByOwnerId(Long id);
+
+
 }
