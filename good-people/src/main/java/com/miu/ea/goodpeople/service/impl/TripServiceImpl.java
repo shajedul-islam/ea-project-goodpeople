@@ -45,11 +45,11 @@ public class TripServiceImpl implements TripService {
         log.debug("Request to save Trip : {}", trip);
         Trip savedTrip = tripRepository.save(trip);
         
-		TripDTO tripDTO = new TripDTO(null, trip.getId(), trip.getOwner().getId(), trip.getStartLocation(),
+		TripDTO tripDTO = new TripDTO(trip.getId(), trip.getId(), trip.getOwner().getId(), trip.getStartLocation(),
 				trip.getDestination(), trip.getStartTime().toString(), trip.getCanOfferRide(), trip.getCanBringProduct(),
 				trip.getNumberOfSeatsOffered());
 		
-		tripClient.createTrip(tripDTO);
+		tripDTO = tripClient.createTrip(tripDTO);
 
         return savedTrip;
     }
@@ -59,7 +59,7 @@ public class TripServiceImpl implements TripService {
         log.debug("Request to save Trip : {}", trip);
         Trip updatedTrip = tripRepository.save(trip);
         
-        TripDTO tripDTO = new TripDTO(null, trip.getId(), trip.getOwner().getId(), trip.getStartLocation(),
+        TripDTO tripDTO = new TripDTO(trip.getId(), trip.getId(), trip.getOwner().getId(), trip.getStartLocation(),
 				trip.getDestination(), trip.getStartTime().toString(), trip.getCanOfferRide(), trip.getCanBringProduct(),
 				trip.getNumberOfSeatsOffered());
 		
