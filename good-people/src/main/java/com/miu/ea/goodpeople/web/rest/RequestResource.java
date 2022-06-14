@@ -67,7 +67,7 @@ public class RequestResource {
             throw new BadRequestAlertException("A new request cannot already have an ID", ENTITY_NAME, "idexists");
         }
         
-        if (request.getRequester().getId() == null) {
+        if (request.getRequester() == null) {
         	final User requester = userService.getUserWithAuthorities().get();
             request.setRequester(requester);
         }

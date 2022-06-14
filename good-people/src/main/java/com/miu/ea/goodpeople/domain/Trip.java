@@ -34,7 +34,7 @@ public class Trip implements Serializable {
 
     @NotNull
     @Column(name = "start_time", nullable = false)
-    private ZonedDateTime startTime;
+    private String startTime;
 
     @Column(name = "can_offer_ride")
     private Boolean canOfferRide;
@@ -96,16 +96,16 @@ public class Trip implements Serializable {
         this.destination = destination;
     }
 
-    public ZonedDateTime getStartTime() {
+    public String getStartTime() {
         return this.startTime;
     }
 
-    public Trip startTime(ZonedDateTime startTime) {
+    public Trip startTime(String startTime) {
         this.setStartTime(startTime);
         return this;
     }
 
-    public void setStartTime(ZonedDateTime startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
