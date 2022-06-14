@@ -55,9 +55,11 @@ public class TripResource {
     @PostMapping("/trips")
     public ResponseEntity<Trip> createTrip(@Valid @RequestBody TripDTO tripDTO) throws URISyntaxException {
         log.debug("REST request to save Trip : {}", tripDTO);
-        if (tripDTO.getId() != null) {
-            throw new BadRequestAlertException("A new trip cannot already have an ID", ENTITY_NAME, "idexists");
-        }
+		/*
+		 * if (tripDTO.getId() != null) { throw new
+		 * BadRequestAlertException("A new trip cannot already have an ID", ENTITY_NAME,
+		 * "idexists"); }
+		 */
         
 		/*
 		 * DateTimeFormatter formatter =
@@ -79,7 +81,7 @@ public class TripResource {
     
     private Trip tripDTOtoTrip(TripDTO tripDTO) {
     	return new Trip(
-        		null, 
+        		tripDTO.getId(), 
         		tripDTO.getTripId(),
         		tripDTO.getOwnerId(),
         		tripDTO.getStartLocation(),
