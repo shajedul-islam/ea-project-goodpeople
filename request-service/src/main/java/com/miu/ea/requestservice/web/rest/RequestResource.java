@@ -233,6 +233,21 @@ public class RequestResource {
     
     static class StatusUpdateReq {
         String status;
+
+		public String getStatus() {
+			return status;
+		}
+
+		public void setStatus(String status) {
+			this.status = status;
+		}
+
+		public StatusUpdateReq() {
+			super();
+		}
+        
+        
+        
     }
 
     @PutMapping("/requests/{id}/status-update")

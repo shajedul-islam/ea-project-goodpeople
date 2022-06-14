@@ -2,6 +2,7 @@ package com.miu.ea.goodpeople.client;
 
 import com.miu.ea.goodpeople.domain.Request;
 import com.miu.ea.goodpeople.service.dto.RequestDTO;
+
 import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
@@ -40,5 +41,6 @@ public interface RequestClient {
     List<RequestDTO> findByTripId(@Param("id") Long id);
     
     @RequestLine("PUT /requests/{id}/status-update")
-    void statusUpdateByRequestId(@Param("id") Long id);
+    @Headers("Content-Type: application/json")
+    void statusUpdateByRequestId(@Param("id") Long id, com.miu.ea.goodpeople.web.rest.StatusUpdateReq statusUpdateReq);
 }

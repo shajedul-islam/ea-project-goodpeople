@@ -124,9 +124,9 @@ public class RequestResource {
     }
     
     @PutMapping("/requests/{id}/status-update")
-    public ResponseEntity<?> updateStatus(@PathVariable("id") Long id) {
-        requestClient.statusUpdateByRequestId(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> updateStatus(@PathVariable("id") Long id, @RequestBody StatusUpdateReq statusUpdateReq) {
+        requestClient.statusUpdateByRequestId(id, statusUpdateReq);
+        return ResponseEntity.ok("Status Updated!");
     }
 
     /**
