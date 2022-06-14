@@ -1,6 +1,7 @@
 package com.miu.ea.goodpeople.client;
 
 import com.miu.ea.goodpeople.domain.Request;
+import com.miu.ea.goodpeople.service.dto.RequestDTO;
 import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
@@ -13,22 +14,28 @@ public interface RequestClient {
 
     @RequestLine("POST /requests")
     @Headers("Content-Type: application/json")
-    Request createRequest(Request request);
+    RequestDTO createRequest(RequestDTO request);
 
     @RequestLine("PUT /requests/{id}")
     @Headers("Content-Type: application/json")
-    Request updateRequest(@Param("id") String id, Request request);
+    RequestDTO updateRequest(@Param("id") Long id, RequestDTO request);
 
     @RequestLine("PATCH /requests/{id}")
     @Headers("Content-Type: application/json")
-    Request partialUpdateRequest(@Param("id") String id, Request request);
+    RequestDTO partialUpdateRequest(@Param("id") Long id, RequestDTO request);
 
     @RequestLine("GET /requests")
-    List<Request> getAllRequests();
+    List<RequestDTO> getAllRequests();
 
     @RequestLine("GET /requests/{id}")
-    List<Request> getRequest(@Param("id") String id);
+    RequestDTO getRequest(@Param("id") Long id);
 
     @RequestLine("DELETE /requests/{id}")
-    List<Request> deleteRequest(@Param("id") String id);
+    void deleteRequest(@Param("id") Long id);
+
+    @RequestLine("GET /requests/requester/{id}")
+    List<RequestDTO> findByRequesterId(@Param("id") Long id);
+
+    @RequestLine("GET /requests/trip/{id}")
+    List<RequestDTO> findByTripId(@Param("id") Long id);
 }

@@ -217,4 +217,21 @@ public class Request implements Serializable {
             ", status='" + getStatus() + "'" +
             "}";
     }
+
+    public Request(Long id, RequestType requestType, String startLocation, String destination,
+                   Integer numberOfSeatsRequested, String product, String deliveryLocation, RequestStatus status, User requester, Trip trip) {
+        this.id = id;
+        this.requestType = requestType;
+        this.startLocation = startLocation;
+        this.destination = destination;
+        this.numberOfSeatsRequested = numberOfSeatsRequested;
+        this.product = product;
+        this.deliveryLocation = deliveryLocation;
+        this.status = status;
+        this.requester = requester;
+        this.trip = trip;
+    }
+
+    public Request() {
+    }
 }
