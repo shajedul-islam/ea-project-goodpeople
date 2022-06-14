@@ -1,17 +1,20 @@
 package com.miu.ea.goodpeople.service.impl;
 
+import com.miu.ea.goodpeople.client.TripClient;
 import com.miu.ea.goodpeople.domain.Trip;
 import com.miu.ea.goodpeople.domain.User;
 import com.miu.ea.goodpeople.repository.TripRepository;
 import com.miu.ea.goodpeople.repository.UserRepository;
 import com.miu.ea.goodpeople.service.TripService;
 import com.miu.ea.goodpeople.service.UserService;
+import com.miu.ea.goodpeople.service.dto.TripDTO;
 
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,22 +31,41 @@ public class TripServiceImpl implements TripService {
     private final TripRepository tripRepository;
     
     private final UserRepository userRepository;
+    
+    private final TripClient tripClient;
 
-    public TripServiceImpl(TripRepository tripRepository, UserRepository userRepository) {
+    public TripServiceImpl(TripRepository tripRepository, UserRepository userRepository, TripClient tripClient) {
         this.tripRepository = tripRepository;
         this.userRepository = userRepository;
+		this.tripClient = tripClient;
     }
 
     @Override
     public Trip save(Trip trip) {
         log.debug("Request to save Trip : {}", trip);
-        return tripRepository.save(trip);
+        Trip savedTrip = tripRepository.save(trip);
+        
+		TripDTO tripDTO = new TripDTO(null, trip.getId(), trip.getOwner().getId(), trip.getStartLocation(),
+				trip.getDestination(), trip.getStartTime().toString(), trip.getCanOfferRide(), trip.getCanBringProduct(),
+				trip.getNumberOfSeatsOffered());
+		
+		tripClient.createTrip(tripDTO);
+
+        return savedTrip;
     }
 
     @Override
     public Trip update(Trip trip) {
         log.debug("Request to save Trip : {}", trip);
-        return tripRepository.save(trip);
+        Trip updatedTrip = tripRepository.save(trip);
+        
+        TripDTO tripDTO = new TripDTO(null, trip.getId(), trip.getOwner().getId(), trip.getStartLocation(),
+				trip.getDestination(), trip.getStartTime().toString(), trip.getCanOfferRide(), trip.getCanBringProduct(),
+				trip.getNumberOfSeatsOffered());
+		
+		tripClient.updateTrip(trip.getId(), tripDTO);
+		
+		return updatedTrip;
     }
 
     @Override
@@ -84,7 +106,16 @@ public class TripServiceImpl implements TripService {
     @Transactional(readOnly = true)
     public Page<Trip> findAll(Pageable pageable) {
         log.debug("Request to get all Trips");
-        return tripRepository.findAll(pageable);
+        
+        List<Trip> trips = tripClient.getAllTrips();
+        
+        final int start = (int)pageable.getOffset();
+        final int end = Math.min((start + pageable.getPageSize()), trips.size());
+        final Page<Trip> page = new PageImpl<>(trips.subList(start, end), pageable, trips.size());
+        
+        return page;
+        
+        // return tripRepository.findAll(pageable);
     }
     
     @Override

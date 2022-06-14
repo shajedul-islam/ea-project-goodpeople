@@ -1,6 +1,8 @@
 package com.miu.ea.goodpeople.client;
 
 import com.miu.ea.goodpeople.domain.Trip;
+import com.miu.ea.goodpeople.service.dto.TripDTO;
+
 import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
@@ -13,23 +15,23 @@ public interface TripClient {
 
     @RequestLine("POST /trips")
     @Headers("Content-Type: application/json")
-    Trip createTrip(Trip trip);
+    TripDTO createTrip(TripDTO trip);
 
     @RequestLine("PUT /trips/{id}")
     @Headers("Content-Type: application/json")
-    Trip updateTrip(@Param String id, Trip trip);
+    TripDTO updateTrip(@Param("id") Long id, TripDTO trip);
 
     @RequestLine("PATCH /trips/{id}")
     @Headers("Content-Type: application/json")
-    Trip partialUpdateTrip(@Param String id, Trip trip);
+    TripDTO partialUpdateTrip(@Param("id") Long id, TripDTO trip);
 
     @RequestLine("GET /trips")
     List<Trip> getAllTrips();
 
     @RequestLine("GET /trips/{id}")
-    List<Trip> getTrip(@Param String id);
+    List<TripDTO> getTrip(@Param("id") Long id);
 
     @RequestLine("DELETE /trips/{id}")
-    List<Trip> deleteTrip(@Param String id);
+    List<TripDTO> deleteTrip(@Param("id") Long id);
 
 }

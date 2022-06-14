@@ -17,18 +17,18 @@ public interface RequestClient {
 
     @RequestLine("PUT /requests/{id}")
     @Headers("Content-Type: application/json")
-    Request updateRequest(@Param String id, Request request);
+    Request updateRequest(@Param("id") String id, Request request);
 
     @RequestLine("PATCH /requests/{id}")
     @Headers("Content-Type: application/json")
-    Request partialUpdateRequest(@Param String id, Request request);
+    Request partialUpdateRequest(@Param("id") String id, Request request);
 
     @RequestLine("GET /requests")
     List<Request> getAllRequests();
 
     @RequestLine("GET /requests/{id}")
-    List<Request> getRequest(@Param String id);
+    List<Request> getRequest(@Param("id") String id);
 
     @RequestLine("DELETE /requests/{id}")
-    List<Request> deleteRequest(@Param String id);
+    List<Request> deleteRequest(@Param("id") String id);
 }

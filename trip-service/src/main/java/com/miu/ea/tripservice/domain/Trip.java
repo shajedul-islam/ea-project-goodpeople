@@ -202,4 +202,23 @@ public class Trip implements Serializable {
             ", numberOfOfferedSeats=" + getNumberOfOfferedSeats() +
             "}";
     }
+
+	public Trip(Long id, @NotNull Long tripId, @NotNull Long ownerId, @NotNull String startLocation,
+			@NotNull String destination, @NotNull ZonedDateTime startTime, Boolean canOfferRide,
+			Boolean canBringProduct, @NotNull Integer numberOfOfferedSeats) {
+		super();
+		this.id = id;
+		this.tripId = tripId;
+		this.ownerId = ownerId;
+		this.startLocation = startLocation;
+		this.destination = destination;
+		this.startTime = startTime;
+		this.canOfferRide = canOfferRide;
+		this.canBringProduct = canBringProduct;
+		this.numberOfOfferedSeats = numberOfOfferedSeats;
+	}
+
+	public Trip() {
+		super();
+	}
 }

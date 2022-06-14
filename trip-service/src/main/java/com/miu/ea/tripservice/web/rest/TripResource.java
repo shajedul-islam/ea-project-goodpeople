@@ -3,9 +3,12 @@ package com.miu.ea.tripservice.web.rest;
 import com.miu.ea.tripservice.domain.Trip;
 import com.miu.ea.tripservice.repository.TripRepository;
 import com.miu.ea.tripservice.service.TripService;
+import com.miu.ea.tripservice.service.dto.TripDTO;
 import com.miu.ea.tripservice.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -45,21 +48,47 @@ public class TripResource {
     /**
      * {@code POST  /trips} : Create a new trip.
      *
-     * @param trip the trip to create.
+     * @param tripDTO the trip to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new trip, or with status {@code 400 (Bad Request)} if the trip has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/trips")
-    public ResponseEntity<Trip> createTrip(@Valid @RequestBody Trip trip) throws URISyntaxException {
-        log.debug("REST request to save Trip : {}", trip);
-        if (trip.getId() != null) {
+    public ResponseEntity<Trip> createTrip(@Valid @RequestBody TripDTO tripDTO) throws URISyntaxException {
+        log.debug("REST request to save Trip : {}", tripDTO);
+        if (tripDTO.getId() != null) {
             throw new BadRequestAlertException("A new trip cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        
+		/*
+		 * DateTimeFormatter formatter =
+		 * DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
+		 * 
+		 * ZonedDateTime zdtWithZoneOffset = ZonedDateTime.parse(tripDTO.getStartTime(),
+		 * formatter); System.out.println("********************** time: " +
+		 * zdtWithZoneOffset);
+		 */
+        
+        Trip trip = tripDTOtoTrip(tripDTO);
+        
         Trip result = tripService.save(trip);
         return ResponseEntity
             .created(new URI("/api/trips/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
+    }
+    
+    private Trip tripDTOtoTrip(TripDTO tripDTO) {
+    	return new Trip(
+        		null, 
+        		tripDTO.getTripId(),
+        		tripDTO.getOwnerId(),
+        		tripDTO.getStartLocation(),
+        		tripDTO.getDestination(),
+        		ZonedDateTime.now(),
+        		tripDTO.getCanOfferRide(),
+        		tripDTO.getCanBringProduct(),
+        		tripDTO.getNumberOfOfferedSeats()
+        		);
     }
 
     /**
@@ -73,7 +102,7 @@ public class TripResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/trips/{id}")
-    public ResponseEntity<Trip> updateTrip(@PathVariable(value = "id", required = false) final Long id, @Valid @RequestBody Trip trip)
+    public ResponseEntity<Trip> updateTrip(@PathVariable(value = "id", required = false) final Long id, @Valid @RequestBody TripDTO trip)
         throws URISyntaxException {
         log.debug("REST request to update Trip : {}, {}", id, trip);
         if (trip.getId() == null) {
@@ -87,7 +116,7 @@ public class TripResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Trip result = tripService.update(trip);
+        Trip result = tripService.update(tripDTOtoTrip(trip));
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, trip.getId().toString()))
