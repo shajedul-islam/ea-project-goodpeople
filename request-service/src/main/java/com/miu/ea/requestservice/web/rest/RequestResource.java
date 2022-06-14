@@ -1,8 +1,13 @@
 package com.miu.ea.requestservice.web.rest;
 
+
 import com.miu.ea.requestservice.domain.Request;
+import com.miu.ea.requestservice.domain.enumeration.RequestStatus;
+import com.miu.ea.requestservice.domain.enumeration.RequestType;
 import com.miu.ea.requestservice.repository.RequestRepository;
+import com.miu.ea.requestservice.service.dto.RequestDTO;
 import com.miu.ea.requestservice.web.rest.errors.BadRequestAlertException;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -48,16 +53,36 @@ public class RequestResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/requests")
-    public ResponseEntity<Request> createRequest(@Valid @RequestBody Request request) throws URISyntaxException {
-        log.debug("REST request to save Request : {}", request);
-        if (request.getId() != null) {
-            throw new BadRequestAlertException("A new request cannot already have an ID", ENTITY_NAME, "idexists");
-        }
+    public ResponseEntity<Request> createRequest(@Valid @RequestBody RequestDTO requestDTO) throws URISyntaxException {
+        log.debug("REST request to save Request : {}", requestDTO);
+		/*
+		 * if (request.getId() != null) { throw new
+		 * BadRequestAlertException("A new request cannot already have an ID",
+		 * ENTITY_NAME, "idexists"); }
+		 */
+        
+        Request request = toRequest(requestDTO);
         Request result = requestRepository.save(request);
         return ResponseEntity
             .created(new URI("/api/requests/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
+    }
+    
+    private Request toRequest(RequestDTO requestDTO) {
+        return new Request(
+            requestDTO.getId(),
+            requestDTO.getId(),
+            requestDTO.getTripId(),
+            requestDTO.getRequesterId(),     
+            RequestType.valueOf(requestDTO.getRequestType()),
+            requestDTO.getStartLocation(),
+            requestDTO.getDestination(),
+            requestDTO.getNumberOfSeatsRequested(),
+            requestDTO.getProduct(),
+            requestDTO.getDeliveryLocation(),
+            RequestStatus.valueOf(requestDTO.getStatus())
+        );
     }
 
     /**
@@ -204,5 +229,27 @@ public class RequestResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
+    }
+    
+    static class StatusUpdateReq {
+        String status;
+    }
+
+    @PutMapping("/requests/{id}/status-update")
+    public ResponseEntity<Void> statusUpdate(@PathVariable("id") Long id, @RequestBody  StatusUpdateReq req) {
+        Request byId = requestRepository.findById(id).orElseThrow(RuntimeException::new);
+        byId.setStatus(RequestStatus.valueOf(req.status));
+        requestRepository.save(byId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("requests/trip/{id}")
+    public List<Request> requestByTripId(@PathVariable("id") Long id) {
+        return requestRepository.findRequestsByTripId(id);
+    }
+
+    @GetMapping("requests/requester/{id}")
+    public List<Request> requestsByRequesterId(@PathVariable("id") Long id) {
+        return requestRepository.findRequestsByRequesterId(id);
     }
 }

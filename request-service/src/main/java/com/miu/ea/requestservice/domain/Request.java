@@ -239,4 +239,28 @@ public class Request implements Serializable {
             ", status='" + getStatus() + "'" +
             "}";
     }
+
+
+	public Request() {
+		super();
+	}
+
+	public Request(Long id2, Long id3, Long tripId2, Long requesterId2, RequestType valueOf, String startLocation2,
+			String destination2, Integer numberOfSeatsRequested2, String product2, String deliveryLocation2,
+			RequestStatus valueOf2) {
+		// TODO Auto-generated constructor stub
+		super();
+		this.id = id2;
+		this.requestId = id3;
+		this.tripId = tripId2;
+		this.requesterId = requesterId2;
+		this.requestType = valueOf;
+		this.startLocation = startLocation2;
+		this.destination = destination2;
+		this.numberOfSeatsRequested = numberOfSeatsRequested2;
+		this.product = product2;
+		this.deliveryLocation = deliveryLocation2;
+		this.status = valueOf2;
+	}
+    
 }

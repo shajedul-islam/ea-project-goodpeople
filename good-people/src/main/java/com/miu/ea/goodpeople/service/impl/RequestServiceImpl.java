@@ -1,6 +1,8 @@
 package com.miu.ea.goodpeople.service.impl;
 
+import com.miu.ea.goodpeople.client.ProductClient;
 import com.miu.ea.goodpeople.client.RequestClient;
+import com.miu.ea.goodpeople.client.TripClient;
 import com.miu.ea.goodpeople.domain.Request;
 import com.miu.ea.goodpeople.domain.Trip;
 import com.miu.ea.goodpeople.domain.User;
@@ -10,7 +12,10 @@ import com.miu.ea.goodpeople.repository.RequestRepository;
 import com.miu.ea.goodpeople.repository.TripRepository;
 import com.miu.ea.goodpeople.repository.UserRepository;
 import com.miu.ea.goodpeople.service.RequestService;
+import com.miu.ea.goodpeople.service.dto.ProductSaveRequest;
 import com.miu.ea.goodpeople.service.dto.RequestDTO;
+import com.miu.ea.goodpeople.service.dto.TripDTO;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -35,28 +40,39 @@ public class RequestServiceImpl implements RequestService {
     private final UserRepository userRepository;
     private final TripRepository tripRepository;
     private final RequestClient requestClient;
+    private final TripClient tripClient;
+    private final ProductClient productClient;
+  
 
-    public RequestServiceImpl(RequestRepository requestRepository, UserRepository userRepository, TripRepository tripRepository, RequestClient requestClient) {
+    public RequestServiceImpl(RequestRepository requestRepository, UserRepository userRepository, TripRepository tripRepository, RequestClient requestClient, TripClient tripClient, ProductClient productClient) {
         this.requestRepository = requestRepository;
         this.userRepository = userRepository;
         this.tripRepository = tripRepository;
         this.requestClient = requestClient;
+        this.tripClient = tripClient;
+		this.productClient = productClient;
     }
 
     @Override
     public Request save(Request request) {
         log.debug("Request to save Request : {}", request);
+        
+        request.setId(new Double(Math.random()).longValue());
 
         RequestDTO requestDTO = toRequestDto(request);
 
-        requestClient.createRequest(requestDTO);
+        requestDTO = requestClient.createRequest(requestDTO);
+        
+        Request r =  toRequest(requestDTO);
+        
+        productClient.save(new ProductSaveRequest(r.getId(), r.getProduct()));
 
-        return requestRepository.save(request);
+        return r;
     }
 
     private RequestDTO toRequestDto(Request request) {
         return new RequestDTO(
-            null,
+            request.getId(),
             request.getId(),
             request.getTrip().getId(),
             request.getRequester().getId(),
@@ -66,10 +82,17 @@ public class RequestServiceImpl implements RequestService {
             request.getNumberOfSeatsRequested(),
             request.getProduct(),
             request.getDeliveryLocation(),
-            request.getStatus().name()
+            (request.getStatus() == null) ? "REJECTED" : request.getStatus().name() 
         );
     }
 
+    private Trip toTrip(Trip trip, TripDTO tripDTO) {
+    	User owner = userRepository.findById(tripDTO.getOwnerId()).get();
+    	return new Trip(tripDTO.getId(), tripDTO.getStartLocation(), tripDTO.getDestination(), tripDTO.getStartTime(),
+    			tripDTO.getCanOfferRide(), tripDTO.getCanBringProduct(), tripDTO.getNumberOfOfferedSeats(),
+    			trip.getNumberOfSeatsRemaining(), trip.getRequests(), owner);
+    }
+    
     private Request toRequest(RequestDTO requestDTO) {
         return new Request(
             requestDTO.getId(),
@@ -81,7 +104,7 @@ public class RequestServiceImpl implements RequestService {
             requestDTO.getDeliveryLocation(),
             RequestStatus.valueOf(requestDTO.getStatus()),
             userRepository.findById(requestDTO.getRequesterId()).orElse(null),
-            tripRepository.findById(requestDTO.getTripId()).orElse(null)
+            toTrip(new Trip(), tripClient.getTrip(requestDTO.getTripId()))
         );
     }
 
@@ -89,8 +112,8 @@ public class RequestServiceImpl implements RequestService {
     public Request update(Request request) {
         log.debug("Request to save Request : {}", request);
         RequestDTO requestDTO = toRequestDto(request);
-        RequestDTO apiResponse = requestClient.updateRequest(requestDTO.getRequestId(), requestDTO);
-        return requestRepository.save(request);
+        requestDTO = requestClient.updateRequest(requestDTO.getRequestId(), requestDTO);
+        return toRequest(requestDTO);
     }
 
     @Override
@@ -144,38 +167,39 @@ public class RequestServiceImpl implements RequestService {
     @Transactional(readOnly = true)
     public List<Request> findAllByRequesterId(Long requesterId) {
         log.debug("Request to get all Requests by requester id");
-        User requester = userRepository.getById(requesterId);
-        List<Request> apiRes = requestClient.findByRequesterId(requesterId)
+        return requestClient.findByRequesterId(requesterId)
             .stream()
             .map(this::toRequest)
             .collect(Collectors.toList());
-        return requestRepository.findAllByRequester(requester);
+        //return requestRepository.findAllByRequester(requester);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Request> findAllByTripId(Long tripId) {
         log.debug("Request to get all Requests by trip id");
-        Trip trip = tripRepository.getById(tripId);
-        List<Request> apiRes = requestClient.findByTripId(tripId)
+        // Trip trip = tripRepository.getById(tripId);
+        List<Request> requests = requestClient.findByTripId(tripId)
             .stream()
             .map(this::toRequest)
             .collect(Collectors.toList());
-        return requestRepository.findAllByTrip(trip);
+        // return requestRepository.findAllByTrip(trip);
+        return requests;
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<Request> findOne(Long id) {
         log.debug("Request to get Request : {}", id);
-        RequestDTO apiRes = requestClient.getRequest(id);
-        return requestRepository.findById(id);
+        RequestDTO requestDTO = requestClient.getRequest(id);
+        return Optional.of((toRequest(requestDTO)));
+        // return requestRepository.findById(id);
     }
 
     @Override
     public void delete(Long id) {
         log.debug("Request to delete Request : {}", id);
         requestClient.deleteRequest(id);
-        requestRepository.deleteById(id);
+        // requestRepository.deleteById(id);
     }
 }

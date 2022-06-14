@@ -42,13 +42,13 @@ public class TripServiceImpl implements TripService {
 		this.tripClient = tripClient;
     }
 
-    private TripDTO tripToTripDTO(Trip trip) {
+    private TripDTO toTripDTO(Trip trip) {
     	return new TripDTO(trip.getId(), trip.getId(), trip.getOwner().getId(), trip.getStartLocation(),
 				trip.getDestination(), trip.getStartTime().toString(), trip.getCanOfferRide(), trip.getCanBringProduct(),
 				trip.getNumberOfSeatsOffered());
     }
 
-    private Trip tripDTOToTrip(Trip trip, TripDTO tripDTO) {
+    private Trip toTrip(Trip trip, TripDTO tripDTO) {
     	User owner = userRepository.findById(tripDTO.getOwnerId()).get();
     	return new Trip(tripDTO.getId(), tripDTO.getStartLocation(), tripDTO.getDestination(), tripDTO.getStartTime(),
     			tripDTO.getCanOfferRide(), tripDTO.getCanBringProduct(), tripDTO.getNumberOfOfferedSeats(),
@@ -61,11 +61,11 @@ public class TripServiceImpl implements TripService {
         // Trip savedTrip = tripRepository.save(trip);
 
         trip.setId(new Double(Math.random()).longValue());
-		TripDTO tripDTO = tripToTripDTO(trip);
+		TripDTO tripDTO = toTripDTO(trip);
 
 		tripDTO = tripClient.createTrip(tripDTO);
 
-        return tripDTOToTrip(trip, tripDTO);
+        return toTrip(trip, tripDTO);
     }
 
     @Override
@@ -73,11 +73,11 @@ public class TripServiceImpl implements TripService {
         log.debug("Request to save Trip : {}", trip);
         //Trip updatedTrip = tripRepository.save(trip);
 
-        TripDTO tripDTO = tripToTripDTO(trip);
+        TripDTO tripDTO = toTripDTO(trip);
 
-		tripClient.updateTrip(trip.getId(), tripDTO);
+		tripDTO = tripClient.updateTrip(trip.getId(), tripDTO);
 
-		return tripDTOToTrip(trip, tripDTO);
+		return toTrip(trip, tripDTO);
     }
 
     @Override
@@ -123,7 +123,7 @@ public class TripServiceImpl implements TripService {
         
         List<Trip> trips = new ArrayList<Trip>();
         for (TripDTO tripDTO : tripDTOs) {
-        	trips.add(tripDTOToTrip(new Trip(), tripDTO));
+        	trips.add(toTrip(new Trip(), tripDTO));
         }
 
         final int start = (int)pageable.getOffset();
@@ -144,7 +144,7 @@ public class TripServiceImpl implements TripService {
         
         List<Trip> trips = new ArrayList<Trip>();
         for (TripDTO tripDTO : tripDTOs) {
-        	trips.add(tripDTOToTrip(new Trip(), tripDTO));
+        	trips.add(toTrip(new Trip(), tripDTO));
         }
         return trips;
     }
@@ -156,7 +156,7 @@ public class TripServiceImpl implements TripService {
         log.debug("Request to get Trip : {}", id);
         // return tripRepository.findById(id);
         TripDTO tripDTO = tripClient.getTrip(id);
-        return Optional.of(tripDTOToTrip(new Trip(), tripDTO));
+        return Optional.of(toTrip(new Trip(), tripDTO));
     }
 
     @Override

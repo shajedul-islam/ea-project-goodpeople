@@ -38,4 +38,7 @@ public interface RequestClient {
 
     @RequestLine("GET /requests/trip/{id}")
     List<RequestDTO> findByTripId(@Param("id") Long id);
+    
+    @RequestLine("PUT /requests/{id}/status-update")
+    void statusUpdateByRequestId(@Param("id") Long id);
 }

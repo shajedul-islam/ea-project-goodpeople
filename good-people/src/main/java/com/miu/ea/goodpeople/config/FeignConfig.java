@@ -1,5 +1,6 @@
 package com.miu.ea.goodpeople.config;
 
+import com.miu.ea.goodpeople.client.ProductClient;
 import com.miu.ea.goodpeople.client.RequestClient;
 import com.miu.ea.goodpeople.client.TripClient;
 import feign.Feign;
@@ -34,5 +35,16 @@ public class FeignConfig {
             .logger(new Slf4jLogger(RequestClient.class))
             .logLevel(Logger.Level.FULL)
             .target(RequestClient.class, "http://localhost:8082/api");
+    }
+
+    @Bean
+    public ProductClient productClient() {
+        return Feign.builder()
+            .client(new OkHttpClient())
+            .encoder(new GsonEncoder())
+            .decoder(new GsonDecoder())
+            .logger(new Slf4jLogger(ProductClient.class))
+            .logLevel(Logger.Level.FULL)
+            .target(ProductClient.class, "http://localhost:8083/api/v1/products");
     }
 }

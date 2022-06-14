@@ -1,5 +1,6 @@
 package com.miu.ea.goodpeople.web.rest;
 
+import com.miu.ea.goodpeople.client.RequestClient;
 import com.miu.ea.goodpeople.domain.Request;
 import com.miu.ea.goodpeople.domain.User;
 import com.miu.ea.goodpeople.repository.RequestRepository;
@@ -46,11 +47,14 @@ public class RequestResource {
     private final RequestRepository requestRepository;
     
     private final UserService userService;
+    
+    private final RequestClient requestClient;
 
-    public RequestResource(RequestService requestService, RequestRepository requestRepository, UserService userService) {
+    public RequestResource(RequestService requestService, RequestRepository requestRepository, UserService userService, RequestClient requestClient) {
         this.requestService = requestService;
         this.requestRepository = requestRepository;
         this.userService = userService;
+        this.requestClient = requestClient;
     }
 
     /**
@@ -102,8 +106,14 @@ public class RequestResource {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
-        if (!requestRepository.existsById(id)) {
-            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+		/*
+		 * if (!requestRepository.existsById(id)) { throw new
+		 * BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"); }
+		 */
+        
+        if (request.getRequester() == null) {
+        	final User requester = userService.getUserWithAuthorities().get();
+            request.setRequester(requester);
         }
 
         Request result = requestService.update(request);
@@ -111,6 +121,12 @@ public class RequestResource {
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, request.getId().toString()))
             .body(result);
+    }
+    
+    @PutMapping("/requests/{id}/status-update")
+    public ResponseEntity<?> updateStatus(@PathVariable("id") Long id) {
+        requestClient.statusUpdateByRequestId(id);
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -155,13 +171,15 @@ public class RequestResource {
      * @param pageable the pagination information.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of requests in body.
      */
-    @GetMapping("/requests")
-    public ResponseEntity<List<Request>> getAllRequests(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
-        log.debug("REST request to get a page of Requests");
-        Page<Request> page = requestService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return ResponseEntity.ok().headers(headers).body(page.getContent());
-    }
+	/*
+	 * @GetMapping("/requests") public ResponseEntity<List<Request>>
+	 * getAllRequests(@org.springdoc.api.annotations.ParameterObject Pageable
+	 * pageable) { log.debug("REST request to get a page of Requests");
+	 * Page<Request> page = requestService.findAll(pageable); HttpHeaders headers =
+	 * PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.
+	 * fromCurrentRequest(), page); return
+	 * ResponseEntity.ok().headers(headers).body(page.getContent()); }
+	 */
 
     /**
      * {@code GET  /requests/requester/:requesterId} : get all the requests by requester id
